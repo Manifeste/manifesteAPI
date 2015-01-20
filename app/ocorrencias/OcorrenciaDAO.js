@@ -15,9 +15,11 @@ var mongoose = require('mongoose'),
 var Ocorrencia = mongoose.model('Ocorrencia', {
 	titulo: String,
 	descricao: String,
-	comentarios: Array,
 	loc: Mixed,
+	categoria: String,
 	encerrado: Boolean,
+	interessados: Array,
+	comentarios: Array,
 	authorID: String
 });
 

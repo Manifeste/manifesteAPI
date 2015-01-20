@@ -15,6 +15,7 @@ var Boom = require('boom');
 var sha1 = require('sha1');
 var Config = require('config');
 var SessionController = require('./SessionController');
+var Q = require('q');
 
 // HELPER METHOD
 
@@ -30,27 +31,31 @@ exports = module.exports = {
 	create: function(req, reply, user){
 		// Impede a criação de dois usuários com o mesmo e-mail
 		UserDAO.count({email: user.email},
-			function(err,count){
-				if(count != 0)
+			function(err, count){
+				if(err){
+					return reply(Boom.badImplementation());
+				}
+				else if(count != 0){
 					return reply(Boom.badRequest('O email está em uso'));
+				}
+
+				user.senha = sha1(user.senha);
+
+				var newUser = new UserDAO(user);
+				newUser.save(function(err, product){
+					if(err){
+						reply(Boom.badImplementation());
+					}
+					
+					SessionController.login(req, product._id);
+					
+					reply({
+						sucesso: true,
+						id: product._id
+					}).header('Location', getResourceURI(product._id));
+				});
 			}
 		);
-
-		user.senha = sha1(user.senha);
-
-		var newUser = new UserDAO(user);
-		newUser.save(function(err, product){
-			if(err){
-				reply(Boom.badImplementation());
-			}
-			
-			SessionController.createSession(product._id);
-			
-			reply({
-				sucesso: true,
-				id: product._id
-			}).header('Location', getResourceURI(product._id));
-		});
 	},
 
 	read: function(reply, userID, fields){
@@ -72,8 +77,8 @@ exports = module.exports = {
 
 	login: function(req, reply, email, senha){
 		UserDAO.find({
-			email: user.email,
-			senha: sha1(user.senha)
+			email: email,
+			senha: sha1(senha)
 		}, function(err, product){
 			if(err){
 				return reply(Boom.badImplementation());
@@ -91,6 +96,8 @@ exports = module.exports = {
 
 	logoff: function(req, reply){
 		SessionController.logoff(req);
+
+		reply({sucesso: true});
 	}
 
 };

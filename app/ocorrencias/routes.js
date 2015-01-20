@@ -13,7 +13,8 @@ var OcorrenciaController = require('./OcorrenciaController');
 var Joi = require('joi');
 var Config = require('config');
 
-var filterList = ['id', 'titulo', 'descricao', 'loc', 'encerrado', 'comentarios', 'authorID'];
+var filterList = ['id', 'titulo', 'descricao', 'loc', 'encerrado', 'comentarios',
+					'interessados', 'authorID'];
 
 function getResourcePath(){
 	return '/' + Config.endpoints['ocorrencias'];
@@ -32,7 +33,8 @@ Router.push({
 				longitude: Joi.number().required(),
 				latitude: Joi.number().required()
 			}
-		}
+		},
+		auth: 'session'
 	},
 	handler: function(req, reply){
 		var lat = req.payload.latitude;
@@ -46,7 +48,7 @@ Router.push({
 				coordinates: [lon, lat]
 			},
 			encerrado: false,
-			authorID: 'danielbastos@live.com'
+			authorID: req.auth.credentials.userID
 		};
 
 		OcorrenciaController.create(reply, ocorrencia);
@@ -61,11 +63,12 @@ Router.push({
 			params: {
 				ocorrenciaID: Joi.string().required()
 			}
-		}
+		},
+		auth: 'session'
 	},
 	handler: function(req, reply){
 		var ocorrenciaID = encodeURIComponent(req.params.ocorrenciaID);
-		OcorrenciaController.delete(reply, ocorrenciaID);
+		OcorrenciaController.delete(reply, ocorrenciaID, req.auth.credentials.userID);
 	}
 });
 
@@ -78,7 +81,8 @@ Router.push({
 				// Aceita somente letras, números e vírgula
 				filter: Joi.string().regex(/^[a-zA-Z0-9,]+$/)
 			}
-		}
+		},
+		auth: 'session'
 	},
 	handler: function(req,reply){
 		var filter = req.query.filter;
@@ -95,7 +99,7 @@ Router.push({
 			}).join(' ');
 		}
 		
-		var authorID = 'danielbastos@live.com';
+		var authorID = req.auth.credentials.userID;
 		OcorrenciaController.readMine(reply, authorID, fields);
 	}
 })
@@ -167,7 +171,7 @@ Router.push({
 	path: getResourcePath() + '/{ocorrenciaID}/encerrado',
 	handler: function(req, reply){
 		var ocorrenciaID = encodeURIComponent(req.params.ocorrenciaID);
-		
+
 		OcorrenciaController.reabrir(reply, ocorrenciaID);
 	}
 });
@@ -180,14 +184,32 @@ Router.push({
 			payload: {
 				comentario: Joi.string().required()	
 			}
-		}
+		},
+		auth: 'session'
 	},
 	handler: function(req, reply){
 		var ocorrenciaID = encodeURIComponent(req.params.ocorrenciaID);
-		var comentario = req.payload.comentario;
+		var comentario = {
+			texto: req.payload.comentario,
+			authorID: req.auth.credentials.userID
+		};
 			
 		OcorrenciaController.comentar(reply, ocorrenciaID, comentario);
 	}
 });
+
+Router.push({
+	method: 'POST',
+	path: getResourcePath() + '/{ocorrenciaID}/interesse',
+	config: {
+		auth: 'session'
+	},
+	handler: function(req, reply){
+		var ocorrenciaID = encodeURIComponent(req.params.ocorrenciaID);
+		var userID = req.auth.credentials.userID;
+
+		OcorrenciaController.declararInteresse(reply, ocorrenciaID, userID);
+	}
+})
 
 exports = module.exports = Router;

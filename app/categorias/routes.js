@@ -28,7 +28,8 @@ Router.push({
 				titulo: Joi.string().required(),
 				categoriaPai: Joi.string()
 			}
-		}
+		},
+		auth: 'session'
 	},
 	handler: function(req, reply){
 		var categoria = {

@@ -1,7 +1,7 @@
 {
-  "name": "Hapi101",
-  "version": "0.0.0",
-  "description": "My first Hapi app",
+  "name": "Manifeste!",
+  "version": "0.0.1",
+  "description": "Repositório de problemas estruturais urbanos",
   "main": "app.js",
   "author": "Daniel Bastos",
   "license": "ISC",
@@ -9,9 +9,14 @@
     "boom": "~2.6.1",
     "fb": "~0.7.0",
     "hapi": "~8.0.0",
+    "hapi-auth-cookie": "^2.0.0",
     "joi": "~5.0.2",
     "mongoose": "~3.8.21",
-    "sha1": "^1.1.0",
-    "toothache": "~1.1.2"
+    "q": "^1.1.2",
+    "sha1": "^1.1.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-shell": "^1.1.1"
   }
 }

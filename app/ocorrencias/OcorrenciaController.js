@@ -55,21 +55,31 @@ exports = module.exports = {
 	/**
 	 * Deleta uma ocorrência
 	 */ 
-	delete: function(reply, ocorrenciaID){
-		OcorrenciaDAO.remove({ _id: ObjectID(ocorrenciaID) },
-			function(err, product, qtdDocAfetados){
-				if(err){
-					reply(Boom.badImplementation());
-				}
-				else if(qtdDocAfetados === 0){
-					reply(Boom.notFound());
+	delete: function(reply, ocorrenciaID, userID){
+		OcorrenciaDAO.find({_id: ObjectID(ocorrenciaID)}).exec().
+			then(function(product){
+				if(product.authorID != userID){
+					reply(Boom.unauthorized());
 				} else {
-					reply({
-						sucesso: true
-					});
+					OcorrenciaDAO.remove({ _id: ObjectID(ocorrenciaID) },
+						function(err, product, qtdDocAfetados){
+							if(err){
+								reply(Boom.badImplementation());
+							}
+							else if(qtdDocAfetados === 0){
+								reply(Boom.notFound());
+							} else {
+								reply({
+									sucesso: true
+								});
+							}
+						}
+					);
 				}
-			}
-		);
+			}).
+			onReject(function(err){
+				reply(Boom.badImplementation());
+			});
 	},
 	
 	read: function(reply, ocorrenciaID, fields){
@@ -136,6 +146,24 @@ exports = module.exports = {
 					sucesso: true
 				}).header('Location', getOcorrenciaURI(ocorrenciaID));
 			}
+		});
+	},
+
+	declararInteresse: function(reply, ocorrenciaID, userID){
+		OcorrenciaDAO.where({
+			_id: ObjectID(ocorrenciaID)
+		}).update({
+			$addToSet: {
+				'interessados': userID
+			}
+		}, function(err, numAffected){
+			if(err){
+				return reply(Boom.badImplementation());
+			}
+
+			return reply({
+				sucesso: true
+			}).header('Location', getOcorrenciaURI(ocorrenciaID));
 		});
 	},
 	
