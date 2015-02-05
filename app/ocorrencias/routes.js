@@ -22,6 +22,9 @@ function getResourcePath(){
 
 var Router = [];
 
+/*
+	Adicionar nova Ocorrência
+*/
 Router.push({
 	method: 'POST',
 	path: getResourcePath(),
@@ -55,6 +58,9 @@ Router.push({
 	}
 });
 
+/*
+	Deletar Ocorrência
+*/
 Router.push({
 	method: 'DELETE',
 	path: getResourcePath() + '/{ocorrenciaID}',
@@ -72,6 +78,9 @@ Router.push({
 	}
 });
 
+/*
+	Retornar Ocorrências do Usuário logado
+*/
 Router.push({
 	method: 'GET',
 	path: getResourcePath() + '/me',
@@ -104,6 +113,9 @@ Router.push({
 	}
 })
 
+/*
+	Retornar Detalhes de Ocorrência
+*/
 Router.push({
 	method: 'GET',
 	path: getResourcePath() + '/{ocorrenciaID}',
@@ -138,6 +150,9 @@ Router.push({
 	}
 });
 
+/*
+	Editar Descrição de Ocorrência
+*/
 Router.push({
 	method: 'PATCH',
 	path: getResourcePath() + '/{ocorrenciaID}',
@@ -156,6 +171,10 @@ Router.push({
 	}
 });
 
+
+/*
+	Encerrar Ocorrência
+*/
 Router.push({
 	method: 'POST',
 	path: getResourcePath() + '/{ocorrenciaID}/encerrado',
@@ -166,6 +185,9 @@ Router.push({
 	}
 });
 
+/*
+	Reabrir Ocorrência
+*/
 Router.push({
 	method: 'DELETE',
 	path: getResourcePath() + '/{ocorrenciaID}/encerrado',
@@ -176,6 +198,9 @@ Router.push({
 	}
 });
 
+/*
+	Adicionar Comentário à Ocorrência
+*/
 Router.push({
 	method: 'POST',
 	path: getResourcePath() + '/{ocorrenciaID}/comentarios',
@@ -198,18 +223,40 @@ Router.push({
 	}
 });
 
+/*
+	Declarar Interesse em Ocorrência
+*/
 Router.push({
-	method: 'POST',
-	path: getResourcePath() + '/{ocorrenciaID}/interesse',
-	config: {
+	method	: 'POST',
+	path 	: getResourcePath() + '/{ocorrenciaID}/interesse',
+	config 	: {
 		auth: 'session'
 	},
-	handler: function(req, reply){
+	handler : function(req, reply){
 		var ocorrenciaID = encodeURIComponent(req.params.ocorrenciaID);
-		var userID = req.auth.credentials.userID;
+		var userID 		 = req.auth.credentials.userID;
 
 		OcorrenciaController.declararInteresse(reply, ocorrenciaID, userID);
 	}
-})
+});
+
+Router.push({
+	method: 'POST',
+	path  : getResourcePath() + '{ocorrenciaID}/orgao/{orgaoID}',
+	config: {
+		validate: {
+			payload: {
+				orgaoID: Joi.string().required()
+			}
+		},
+		auth 	: 'session'
+	},
+	handler: function (req, reply) {
+		var ocorrenciaID = encodeURIComponent(req.params.ocorrenciaID);
+		var orgaoID 	 = encodeURIComponent(req.params.orgaoID);
+
+		OcorrenciaController.addOrgao(reply, ocorrenciaID, orgaoID);
+	}
+});
 
 exports = module.exports = Router;

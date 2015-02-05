@@ -1,6 +1,6 @@
 /*
  * Cria o Objeto de Acesso de Dados para a coleção de Ocorrências
- * 
+ *
  * @exports Mongoose#Model Modelo de Ocorrência
  */
 
@@ -17,6 +17,7 @@ var Ocorrencia = mongoose.model('Ocorrencia', {
 	descricao: String,
 	loc: Mixed,
 	categoria: String,
+	fragmentos: Array,
 	encerrado: Boolean,
 	interessados: Array,
 	comentarios: Array,

@@ -14,7 +14,10 @@ config.launchDB();
 server.connection({
 	port: 4000,
 	routes: {
-		cors: true
+		cors: {
+			origin: ['http://localhost:8000'],
+			credentials: true
+		}
 	}
 });
 
@@ -31,7 +34,8 @@ server.register(require('hapi-auth-cookie'), function (err) {
 [
 	'./ocorrencias/routes.js',
 	'./categorias/routes.js',
-	'./auth/routes.js'
+	'./auth/routes.js',
+	'./orgaoCompetente/routes.js'
 ].forEach(function(routeFile){
 	server.route(require(routeFile));
 });
