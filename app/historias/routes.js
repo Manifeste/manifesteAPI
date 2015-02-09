@@ -13,6 +13,7 @@ var HistoriasController = require('./HistoriasController');
 var Joi = require('joi');
 var Config = require('config');
 var Boom = require('boom');
+var _ = require('lodash');
 
 function getResourcePath(){
     return '/' + Config.endpoints['historias'];
@@ -26,6 +27,17 @@ function getOcorrenciaURI( orgaoID ){
     ].join('/');
 }
 
+function extractHistoria ( payload ){
+    var historia = {};
+    _.keys(payload).forEach(function( key ){
+        if( payload[key] ){
+            historia[key] = payload[key];
+        }
+    });
+
+    return historia;
+}
+
 var Router = [];
 
 /*
@@ -37,21 +49,16 @@ Router.push({
     config: {
         validate: {
             payload: {
-                tipo: Joi.string().required(),
-                data: Joi.date().format('DD/MM/YYYY').optional(),
-                historia: Joi.string().email().optional()
+                data: Joi.date().format('DD/MM/YYYY').required(),
+                historia: Joi.string().required()
             }
         },
         auth: 'session'
     },
     handler: function( req, reply ){
-        var historia = {
-            nome: req.payload.nome,
-            data: req.payload.data,
-            historia: req.payload.historia
-        };
+        var historia = extractHistoria( req.payload );
 
-        OrgaosController
+        HistoriasController
             .create( historia )
             .then(function( doc ){
                 reply({
@@ -69,7 +76,7 @@ Router.push({
     method: 'GET',
     path: getResourcePath() + '/{histID}',
     handler: function( req, reply ){
-        OrgaosController
+        HistoriasController
             .read({
                 _id: encodeURIComponent(req.params.histID)
             })
@@ -92,26 +99,21 @@ Router.push({
     config: {
         validate: {
             payload: {
-                tipo: Joi.string().optional(),
                 data: Joi.date().format('DD/MM/YYYY').optional(),
-                historia: Joi.string().email().optional()
+                historia: Joi.string().optional()
             }
         },
         auth: 'session'
     },
     handler: function( req, reply ){
-        var historia = {
-            nome: req.payload.nome,
-            data: req.payload.data,
-            historia: req.payload.historia
-        };
+        var historia = extractHistoria( req.payload );
 
-        OrgaosController
+        HistoriasController
             .update({
                 where: {
                     _id: encodeURIComponent(req.params.histID)
                 },
-                set: orgao
+                set: historia
             })
             .then(function( doc ){
                 if( !doc ){
@@ -135,7 +137,7 @@ Router.push({
         auth: 'session'
     },
     handler: function( req, reply ){
-        OrgaosController
+        HistoriasController
             .delete({
                 _id: encodeURIComponent(req.params.histID)
             })

@@ -35,7 +35,8 @@ server.register(require('hapi-auth-cookie'), function (err) {
 	'./auth/routes.js',
 	'./categorias/routes.js',
 	'./ocorrencias/routes.js',
-	'./orgaoCompetente/routes.js'
+	'./orgaoCompetente/routes.js',
+	'./historias/routes.js'
 ].forEach(function( routeFile ){
 	server.route( require( routeFile ) );
 });

@@ -13,7 +13,6 @@ var mongoose = require('mongoose'),
 // Definição do Schema de Ocorrências
 
 var Ocorrencia = mongoose.model('Historias', {
-    tipo: String,
     data: Date,
     historia: String
 });
