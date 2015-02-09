@@ -1,6 +1,6 @@
 /*
  * Cria o Objeto de Acesso de Dados para a Orgãos Responsáveis
- * 
+ *
  * @exports Mongoose#Model Modelo de Orgãos
  */
 

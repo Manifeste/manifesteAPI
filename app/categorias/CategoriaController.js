@@ -5,10 +5,10 @@
  * 		ao que foi pedido
  * 		2 - Gerar e enviar a resposta apropriada
  * 		ao usuário
- */ 
+ */
 
 // Faz as importações necessárias
- 
+
 var CategoriaDAO = require('./CategoriaDAO');
 var ObjectID = require('mongoose').Types.ObjectId;
 var Boom = require('boom');
@@ -32,7 +32,7 @@ exports = module.exports = {
 			if(!ObjectID.isValid(categoria.categoriaPai)){
 				return reply(Boom.notFound());
 			}
-			
+
 			CategoriaDAO.count({
 				_id: ObjectID(categoria.categoriaPai)
 			}, function(err, count){
@@ -42,9 +42,9 @@ exports = module.exports = {
 					return reply(Boom.notFound());
 			});
 		}
-		
+
 		var newCategoria = new CategoriaDAO(categoria);
-		
+
 		newCategoria.save(function(err, product){
 			if(err){
 				return reply(Boom.badImplementation());
@@ -55,11 +55,11 @@ exports = module.exports = {
 				id: product._id
 			}).header('Location', getOcorrenciaURI + '/' + product._id);
 		});
-	}, 
-	
+	},
+
 	/**
 	 * Deleta uma ocorrência
-	 */ 
+	 */
 	delete: function(reply, categoriaID){
 		CategoriaDAO.remove({ _id: ObjectID(categoriaID) },
 			function(err, product, qtdDocAfetados){

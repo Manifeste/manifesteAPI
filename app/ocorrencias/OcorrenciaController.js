@@ -13,6 +13,7 @@ var OcorrenciaDAO = require('./OcorrenciaDAO');
 var ObjectID = require('mongoose').Types.ObjectId;
 var Boom = require('boom');
 var Config = require('config');
+var Crude = require('make-me-crude');
 
 
 // HELPER METHOD
