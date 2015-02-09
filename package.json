@@ -7,10 +7,11 @@
   "license": "ISC",
   "dependencies": {
     "boom": "~2.6.1",
-    "fb": "~0.7.0",
     "hapi": "~8.0.0",
     "hapi-auth-cookie": "^2.0.0",
     "joi": "~5.0.2",
+    "lodash": "^3.1.0",
+    "make-me-crude": "^0.1.0",
     "mongoose": "~3.8.21",
     "q": "^1.1.2",
     "sha1": "^1.1.0"
