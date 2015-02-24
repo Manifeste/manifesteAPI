@@ -15,11 +15,13 @@ var Config = require('config');
 var Boom = require('boom');
 var _ = require('lodash');
 
+var filterList = ['_id', 'nome', 'descricao', 'email', 'telefone', 'endereco'];
+
 function getResourcePath(){
 	return '/' + Config.endpoints['orgaos'];
 }
 
-function getOcorrenciaURI( orgaoID ){
+function getOrgaoURI( orgaoID ){
 	return [
 		Config.url,
 		Config.endpoints['orgaos'],
@@ -62,12 +64,12 @@ Router.push({
 		var orgao = extractOrgao( req.payload );
 
 		OrgaosController
-			.create( orgao )
+			.$create( orgao )
 			.then(function( doc ){
 				reply({
 					success: true,
 					id: doc._id
-				}).header( 'Location', getOcorrenciaURI( doc._id ) );
+				}).header( 'Location', getOrgaoURI( doc._id ) );
 			})
 			.fail(function( err ){
 				reply( Boom.badImplementation() );
@@ -80,9 +82,10 @@ Router.push({
 	path: getResourcePath() + '/{orgaoID}',
 	handler: function( req, reply ){
 		OrgaosController
-			.read({
+			.$where({
 				_id: encodeURIComponent(req.params.orgaoID)
 			})
+			.$read()
 			.then(function( doc ){
 				if( !doc ){
 					reply( Boom.notFound() );
@@ -115,19 +118,17 @@ Router.push({
 		var orgao = extractOrgao( req.payload );
 
 		OrgaosController
-			.update({
-				where: {
-					_id: encodeURIComponent(req.params.orgaoID)
-				},
-				set: orgao
+			.$where({
+				_id: encodeURIComponent(req.params.orgaoID)
 			})
+			.$update(orgao)
 			.then(function( doc ){
 				if( !doc ){
 					reply( Boom.notFound() );
 				} else {
 					reply({
 						success: true
-					}).header( 'Location', getOcorrenciaURI( doc._id ) );
+					}).header( 'Location', getOrgaoURI( doc._id ) );
 				}
 			})
 			.fail(function( err ){
@@ -144,9 +145,10 @@ Router.push({
 	},
 	handler: function( req, reply ){
 		OrgaosController
-			.delete({
+			.$where({
 				_id: encodeURIComponent(req.params.orgaoID)
 			})
+			.$delete()
 			.then(function( qtd ){
 				if( qtd === 0 ){
 					reply( Boom.notFound() );
@@ -160,6 +162,36 @@ Router.push({
 			.fail(function(){
 				reply( Boom.badImplementation() );
 			});
+	}
+});
+
+Router.push({
+	method: 'GET',
+	path: getResourcePath(),
+	handler: function( req, reply ){
+		var filter = encodeURIComponent( req.query.filter );
+		var fields;
+
+		if(!filter){
+			fields = filterList;
+		} else {
+			fields = filter.split(',').filter(function(currentValue){
+				if(filterList.indexOf(currentValue) != -1){
+					return currentValue;
+				}
+				return '';
+			});
+		}
+
+		OrgaosController
+			.$where()
+			.$query( fields )
+			.then(function( docs ){
+				reply( docs );
+			})
+			.fail(function(){
+				reply( Boom.badImplementation() );
+			})
 	}
 });
 

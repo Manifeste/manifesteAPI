@@ -14,10 +14,6 @@ var Crude = require('make-me-crude');
 
 // HELPER METHOD
 
-
 exports = module.exports = Crude.crud({
-    DAO: OrgaosDAO,
-    subCrud: {
-        nome: 'historias'
-    }
+    DAO: OrgaosDAO
 });

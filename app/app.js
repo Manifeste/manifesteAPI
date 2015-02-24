@@ -15,7 +15,7 @@ server.connection({
 	port: 4000,
 	routes: {
 		cors: {
-			origin: ['http://localhost:8000'],
+			origin: ['*'],
 			credentials: true
 		}
 	}
@@ -35,8 +35,8 @@ server.register(require('hapi-auth-cookie'), function (err) {
 	'./auth/routes.js',
 	'./categorias/routes.js',
 	'./ocorrencias/routes.js',
-	'./orgaoCompetente/routes.js',
-	'./historias/routes.js'
+	'./ocorrencias/orgaosRoute.js',
+	'./orgaoCompetente/routes.js'
 ].forEach(function( routeFile ){
 	server.route( require( routeFile ) );
 });

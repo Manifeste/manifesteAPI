@@ -13,15 +13,20 @@ var mongoose = require('mongoose'),
 // Definição do Schema de Ocorrências
 
 var Ocorrencia = mongoose.model('Ocorrencia', {
-	titulo: String,
-	descricao: String,
-	loc: Mixed,
-	categoria: String,
-	fragmentos: Array,
-	encerrado: Boolean,
-	interessados: Array,
-	comentarios: Array,
-	authorID: String
+		titulo: String,
+		descricao: String,
+		loc: {type: Mixed, index: '2dsphere'},
+		categoria: String,
+		orgaos: Array,
+		interessados: Array,
+		historias: Array,
+		comentarios: Array,
+		encerrado: Boolean,
+		authorID: String
+});
+
+Ocorrencia.ensureIndexes(function(err){
+	console.log( err );
 });
 
 // Exportação do Model resultante

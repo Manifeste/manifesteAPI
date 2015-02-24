@@ -1,5 +1,5 @@
 /*
- * Cria o Objeto de Acesso de Dados para a Orgãos Responsáveis
+ * Cria o Objeto de Acesso de Dados para a Orgãos Competentes
  *
  * @exports Mongoose#Model Modelo de Orgãos
  */
@@ -10,9 +10,9 @@
 var mongoose = require('mongoose'),
 	Mixed = mongoose.Schema.Types.Mixed;
 
-// Definição do Schema de Ocorrências
+// Definição do Schema de Orgãos Competentes
 
-var Ocorrencia = mongoose.model('Orgao', {
+var Orgao = mongoose.model('Orgao', {
 	nome: String,
 	descricao: String,
 	email: String,
@@ -22,4 +22,4 @@ var Ocorrencia = mongoose.model('Orgao', {
 
 // Exportação do Model resultante
 
-exports = module.exports = Ocorrencia;
+exports = module.exports = Orgao;
