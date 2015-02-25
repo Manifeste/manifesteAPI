@@ -57,8 +57,7 @@ Router.push({
 				telefone: Joi.string().alphanum().optional(),
 				endereco: Joi.string().optional()
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function( req, reply ){
 		var orgao = extractOrgao( req.payload );
@@ -111,8 +110,7 @@ Router.push({
 				telefone: Joi.string().alphanum().optional(),
 				endereco: Joi.string().optional()
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function( req, reply ){
 		var orgao = extractOrgao( req.payload );
@@ -140,9 +138,6 @@ Router.push({
 Router.push({
 	method: 'DELETE',
 	path: getResourcePath() + '/{orgaoID}',
-	config: {
-		auth: 'session'
-	},
 	handler: function( req, reply ){
 		OrgaosController
 			.$where({

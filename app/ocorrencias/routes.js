@@ -47,8 +47,7 @@ Router.push({
 				latitude: Joi.number().required(),
 				categoria: Joi.string().required()
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function( req, reply ){
 		var lat = req.payload.latitude;
@@ -151,8 +150,7 @@ Router.push({
 			params: {
 				ocorrenciaID: Joi.string().required()
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function( req, reply ){
 		var ocorrenciaID = encodeURIComponent(req.params.ocorrenciaID);
@@ -201,8 +199,7 @@ Router.push({
 				// Aceita somente letras, números e vírgula
 				filter: Joi.string().regex(/^[a-zA-Z0-9,]+$/)
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function(req,reply){
 		var filter = encodeURIComponent( req.query.filter );
@@ -335,8 +332,7 @@ Router.push({
 			payload: {
 				categoriaID: Joi.string().required()
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function( req, reply ){
 		var ocorrenciaID = encodeURIComponent(req.params.ocorID);
@@ -444,8 +440,7 @@ Router.push({
             payload: {
                 comentario: Joi.string().required()
             }
-        },
-		auth: 'session'
+        }
     },
     handler: function( req, reply ){
         var ocorID = encodeURIComponent(req.params.ocorID);

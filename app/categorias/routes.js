@@ -53,8 +53,7 @@ Router.push({
 				titulo: Joi.string().required(),
 				categoriaPai: Joi.string().optional()
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function( req, reply ){
 		var categoria = extractCategoria( req.payload );
@@ -104,8 +103,7 @@ Router.push({
 				titulo: Joi.string().required(),
 				categoriaPai: Joi.string().optional()
 			}
-		},
-		auth: 'session'
+		}
 	},
 	handler: function( req, reply ){
 		var categoria = extractCategoria( req.payload );
@@ -133,9 +131,6 @@ Router.push({
 Router.push({
 	method: 'DELETE',
 	path: getResourcePath() + '/{categoriaID}',
-	config: {
-		auth: 'session'
-	},
 	handler: function( req, reply ){
 		CategoriasController
 			.$where({

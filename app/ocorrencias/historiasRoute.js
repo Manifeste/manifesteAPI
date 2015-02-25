@@ -40,8 +40,7 @@ Router.push({
                 texto: Joi.string().required(),
                 data: Joi.date().format('DD/MM/YYYY').optional()
             }
-        },
-        auth: 'session'
+        }
     },
     handler: function( req, reply ){
         var texto = req.payload.texto;
