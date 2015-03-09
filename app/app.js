@@ -22,11 +22,38 @@ server.connection({
 });
 
 // Configura plugin de autenticação
-server.register(require('hapi-auth-cookie'), function (err) {
-    server.auth.strategy('session', 'cookie', {
-        password: 'secret',
-        cookie: 'this_is_manifeste!',
-        isSecure: false
+server.register(require('hapi-auth-bearer-token'), function (err) {
+
+    server.auth.strategy('session', 'bearer-access-token', {
+        allowQueryToken: true,              // optional, true by default
+        allowMultipleHeaders: false,        // optional, false by default
+        accessTokenName: 'token',		    // optional, 'access_token' by default
+        validateFunc: function( passedToken, callback ) {
+			var UserController = require('./auth/UserController.js');
+
+			console.log('Token: ' + passedToken);
+
+			UserController
+				.$where({
+					token: passedToken
+				})
+				.$read()
+				.then(function( user ){
+					if( user ){
+						callback( null, true, {
+							userID: user._id
+						});
+						reply({
+							success: true
+						});
+					} else {
+						callback( Boom.unauthorized(), false );
+					}
+				})
+				.fail(function(){
+					reply( Boom.badImplementation() );
+				});
+        }
     });
 });
 

@@ -7,11 +7,13 @@ var Schema = mongoose.Schema;
 
 var User = mongoose.model('User', {
 	email: String,
-	senha: String, 
+	senha: String,
 	nome: String,
 	dataNascimento: Date,
 	sobreMim: String,
-	contas: Schema.Types.Mixed
+	contas: Schema.Types.Mixed,
+	token: String,
+	ttl: Date
 });
 
 // Exportação do Model resultante

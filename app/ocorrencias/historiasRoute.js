@@ -63,7 +63,7 @@ Router.push({
                 texto: texto,
                 data: data
             })
-            .$then(function( data ){
+            .then(function( data ){
                 reply({
                     success: true
                 }).header('Location', getOcorrenciaURI( ocorrenciaID ));

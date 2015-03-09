@@ -5,10 +5,10 @@
  * 		ao que foi pedido
  * 		2 - Gerar e enviar a resposta apropriada
  * 		ao usuário
- */ 
+ */
 
 // Faz as importações necessárias
- 
+
 var UserDAO = require('./UserDAO');
 var ObjectID = require('mongoose').Types.ObjectId;
 var Boom = require('boom');
@@ -27,77 +27,8 @@ function getResourceURI(userID){
 	].join('/');
 }
 
-exports = module.exports = {
-	create: function(req, reply, user){
-		// Impede a criação de dois usuários com o mesmo e-mail
-		UserDAO.count({email: user.email},
-			function(err, count){
-				if(err){
-					return reply(Boom.badImplementation());
-				}
-				else if(count != 0){
-					return reply(Boom.badRequest('O email está em uso'));
-				}
+var Crude = require('make-me-crude');
 
-				user.senha = sha1(user.senha);
-
-				var newUser = new UserDAO(user);
-				newUser.save(function(err, product){
-					if(err){
-						reply(Boom.badImplementation());
-					}
-					
-					SessionController.login(req, product._id);
-					
-					reply({
-						sucesso: true,
-						id: product._id
-					}).header('Location', getResourceURI(product._id));
-				});
-			}
-		);
-	},
-
-	read: function(reply, userID, fields){
-		UserDAO.where({
-			_id: ObjectID(userID)
-		}).select(fields).findOne(
-			function(err, product){
-				if(err){
-					reply(Boom.badImplementation());
-				}
-				else if(!product){
-					reply(Boom.notFound());
-				} else {
-					reply(product);
-				}
-			}
-		);
-	},
-
-	login: function(req, reply, email, senha){
-		UserDAO.find({
-			email: email,
-			senha: sha1(senha)
-		}, function(err, product){
-			if(err){
-				return reply(Boom.badImplementation());
-			} else if(!product) {
-				return reply(Boom.unauthorized());
-			} else {
-				SessionController.login(req, product._id)
-
-				return reply({
-					sucesso: true
-				}).header('Location', getResourceURI(product._id));
-			}
-		});
-	},
-
-	logoff: function(req, reply){
-		SessionController.logoff(req);
-
-		reply({sucesso: true});
-	}
-
-};
+exports = module.exports = Crude.crud({
+	DAO: UserDAO
+});
